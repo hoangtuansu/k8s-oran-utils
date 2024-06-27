@@ -1,0 +1,38 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: student-lv1
+  namespace: ransim
+rules:
+  - apiGroups:
+      - ''
+      - extensions
+      - apps
+      - batch
+      - networking.k8s.io
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: student-lv1
+  namespace: ricxapp
+rules:
+  - apiGroups:
+      - ''
+      - extensions
+      - apps
+      - batch
+      - networking.k8s.io
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+---

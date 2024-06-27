@@ -1,0 +1,74 @@
+Prerequisites
+- git
+- docker
+- python3
+#Install kubectl tool Linux
+
+sudo apt-get install -y apt-transport-https ca-certificates curl gpg
+curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.28/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.28/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+
+#Install helm Linux
+curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
+sudo chmod 700 get_helm.sh
+./get_helm.sh
+
+#Install kubectl tool Windows
+https://dl.k8s.io/release/v1.28.4/bin/windows/amd64/kubectl.exe
+
+
+#Create kubeconfig file
+apiVersion: v1
+kind: Config
+clusters:
+- name: ets-oran
+  cluster:
+    server: https://10.180.113.115:6443
+    insecure-skip-tls-verify: true
+users:
+- name: tuan
+  user:
+    token: <TOKEN>
+contexts:
+- name: ricxapp
+  context:
+    cluster: ets-oran
+    user: tuan
+    namespace: ricxapp
+current-context: ricxapp
+
+#Test the connection to K8s cluster
+kubectl --kubeconfig=/path/to/your/kubeconfig <kubectl_command>
+
+#or set environment variable
+export KUBECONFIG=/path/to/your/kubeconfig
+kubectl <kubectl_command>
+
+
+#Install dms_cli
+git clone https://gerrit.o-ran-sc.org/r/ric-plt/appmgr
+cd appmgr/xapp_orchestrater/dev/xapp_onboarder
+sudo apt install python3-pip
+pip3 uninstall xapp_onboarder 
+pip3 install ./
+/home/system/.local/bin/dms_cli health
+
+
+#Setup helm repo
+docker run --rm -u 0 -it -d -p 8090:8080 -e DEBUG=1 -e STORAGE=local -e STORAGE_LOCAL_ROOTDIR=/charts -v $(pwd)/charts:/charts chartmuseum/chartmuseum:latest
+
+#Windows:
+$env:CHART_REPO_URL = "http://10.180.113.137:8090" && dms_cli health
+export HELM_REPO_URL=http://10.180.113.137:8090/charts
+
+
+#dms_cli
+export CHART_REPO_URL=http://10.180.113.137:8090 && dms_cli health
+curl -X DELETE http://localhost:8090/api/charts/<XAPP_CHART_NAME>/<VERSION>
+dms_cli onboard --config_file_path=/home/system/workspace/kpimon-go/deploy/config.json --shcema_file_path=/home/system/workspace/kpimon-go/deploy/schema.json
+dms_cli get_charts_list
+dms_cli install kpimon-go 2.0.2-alpha ricxapp
+dms_cli upgrade --xapp_chart_name=kpimon-go --old_version=2.0.1 --new_version=2.0.2-alpha --namespace=ricxapp
+dms_cli download_values_yaml kpimon-go 2.0.2-alpha --output-path=/tmp/kpi

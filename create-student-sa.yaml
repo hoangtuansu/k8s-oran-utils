@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rania
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: rania
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rania
+  namespace: ransim
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: student-lv1
+subjects:
+- kind: ServiceAccount
+  name: rania
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rania
+  namespace: ricxapp
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: student-lv1
+subjects:
+- kind: ServiceAccount
+  name: rania
+  namespace: kubernetes-dashboard
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: rania
+  namespace: rania
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: admin
+subjects:
+- kind: ServiceAccount
+  name: rania
+  namespace: kubernetes-dashboard
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: rania
+  namespace: kubernetes-dashboard
+  annotations:
+    kubernetes.io/service-account.name: "rania"
+type: kubernetes.io/service-account-token
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: admin
+  namespace: rania
+rules:
+  - apiGroups:
+      - ''
+      - extensions
+      - apps
+      - batch
+      - networking.k8s.io
+    resources:
+      - '*'
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: student-lv1
+  namespace: ricplt
+rules:
+  - apiGroups:
+      - ''
+      - extensions
+      - apps
+      - batch
+      - networking.k8s.io
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
