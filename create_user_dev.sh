@@ -12,6 +12,6 @@ echo "$username:$password" | sudo chpasswd
 sudo gpasswd -a $username docker
 sudo gpasswd -a $username student
 newgrp docker
-newgrp system
+newgrp student
 
 echo "User '$username' has been created with the password '$password'"
