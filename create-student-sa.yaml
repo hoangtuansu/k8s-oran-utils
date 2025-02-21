@@ -2,70 +2,70 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: salabdi
+  name: studas
 ---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: salabdi
-  namespace: salabdi
+  name: studas
+  namespace: studas
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: salabdi
-  namespace: ransim
+  name: studas
+  namespace: ran
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: student-lv1
+  name: student
 subjects:
 - kind: ServiceAccount
-  name: salabdi
-  namespace: salabdi
+  name: studas
+  namespace: studas
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: salabdi
+  name: studas
   namespace: ricxapp
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
-  name: student-lv1
+  name: student
 subjects:
 - kind: ServiceAccount
-  name: salabdi
-  namespace: salabdi
+  name: studas
+  namespace: studas
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: salabdi
-  namespace: salabdi
+  name: studas
+  namespace: studas
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: admin
 subjects:
 - kind: ServiceAccount
-  name: salabdi
-  namespace: salabdi
+  name: studas
+  namespace: studas
 ---
 apiVersion: v1
 kind: Secret
 metadata:
-  name: salabdi
-  namespace: salabdi
+  name: studas
+  namespace: studas
   annotations:
-    kubernetes.io/service-account.name: "salabdi"
+    kubernetes.io/service-account.name: "studas"
 type: kubernetes.io/service-account-token
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: admin
-  namespace: salabdi
+  namespace: studas
 rules:
   - apiGroups:
       - ''
@@ -77,72 +77,12 @@ rules:
       - '*'
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: student-lv1
-  namespace: ricplt
-rules:
-  - apiGroups:
-      - ''
-      - extensions
-      - apps
-      - batch
-      - networking.k8s.io
-    resources:
-      - services
-      - pods
-      - deployments
-      - statefulsets
-      - configmaps
-    verbs:
-      - get
-      - list
-      - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: student-lv1
-  namespace: ricplt
-rules:
-  - apiGroups:
-      - ''
-      - extensions
-      - apps
-      - batch
-      - networking.k8s.io
-    resources:
-      - services
-      - pods
-      - deployments
-      - statefulsets
-      - configmaps
-    verbs:
-      - get
-      - list
-      - watch
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: student-lv1
-  namespace: ricxapp
-rules:
-  - apiGroups:
-      - ''
-      - extensions
-      - apps
-      - batch
-      - networking.k8s.io
-    resources:
-      - services
-      - pods
-      - deployments
-      - statefulsets
-      - configmaps
-    verbs:
-      - get
-      - list
-      - watch
----
+  name: dbaas-appconfig
+  namespace: studas
+data:
+  DBAAS_NODE_COUNT: '1'
+  DBAAS_SERVICE_HOST: service-ricplt-dbaas-tcp.ricplt
+  DBAAS_SERVICE_PORT: '6379'
